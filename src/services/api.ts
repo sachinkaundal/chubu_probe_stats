@@ -298,6 +298,11 @@ export const uploadFile = async (file: File): Promise<string> => {
         errorMessage ||
           'Invalid or missing file. Upload a valid ZIP or CSV file.'
       );
+    } else if (statusCode === 409) {
+      throw new Error(
+        errorMessage ||
+          'Please upload a valid CSV file or ZIP containing CSV files.'
+      );
     } else if (statusCode === 500) {
       throw new Error(
         errorMessage || 'Failed to process the request. Please try again later.'
