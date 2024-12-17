@@ -233,6 +233,7 @@ const AreaUploadManager = forwardRef(
                   size="normal"
                   onClick={clearFilesCallback}
                   design="secondary"
+                  disabled={disabled}
                 >
                   {clearFilesText}
                 </Button>

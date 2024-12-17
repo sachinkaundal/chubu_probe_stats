@@ -279,7 +279,7 @@ const EditMemo = () => {
           <ButtonContainer>
             <LinkContainer to="/settings/chubu-probe-integrator?tab=group2">
               <CancelButton>
-                <Button design="secondary" size="normal">
+                <Button design="secondary" size="normal" disabled={loading}>
                   {t('Cancel')}
                 </Button>
               </CancelButton>

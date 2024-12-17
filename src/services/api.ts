@@ -1,11 +1,8 @@
 import axios from 'axios';
-const PROTOCOL = process.env.REACT_APP_PROTOCOL;
-const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_PORT}`;
-console.log(
-  process.env,
-  `${PROTOCOL}://${BASE_URL}/api/target_road_table`,
-  'process'
-);
+const PROTOCOL = process.env.REACT_APP_PROTOCOL || 'http';
+const BASE_URL =
+  `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_PORT}` ||
+  'localhost:5000';
 
 const authorizationToken: string =
   localStorage.getItem('user_login_info') || 'invalidToken';

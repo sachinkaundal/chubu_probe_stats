@@ -322,11 +322,7 @@ const CreateMemo = () => {
           <ButtonContainer>
             <LinkContainer to="/settings/chubu-probe-integrator?tab=group2">
               <CancelButton>
-                <Button
-                  design="secondary"
-                  size="normal"
-                  // onClick={handleAddEditModal}
-                >
+                <Button design="secondary" size="normal" disabled={loading}>
                   {t('Cancel')}
                 </Button>
               </CancelButton>
