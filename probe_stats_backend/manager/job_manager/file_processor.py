@@ -140,7 +140,7 @@ class FileProcessor:
 
         except Exception as e:
             print(f"Error during file processing: {e}")
-            return {"statusCode": 500, "message": "Failed to process the request. Please try again later."}
+            return {"statusCode": 500, "message": f"Failed to process the request. Error: {str(e)}"}
 
         finally:
             shutil.rmtree(temp_extract_dir, ignore_errors=True)

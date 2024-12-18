@@ -30,6 +30,45 @@ def handle_chubu_probe():
         if not uploaded_file or not uploaded_file.filename:
             return {"statusCode": 404, "message": "No file selected. Please upload a valid ZIP or CSV file."}
 
+        # # Secure the filename
+        filename = secure_filename(uploaded_file.filename)
+
+        # # Validate the file type
+        if not Utils.validate_csv_or_zip(filename):
+            return {"statusCode": 400, "error": f"Invalid file type: {filename}. Only CSV and ZIP files are allowed."}
+
+    
+        temp_dir = TMP_DIR  # Replace TMP_DIR with the actual temporary directory path
+        os.makedirs(temp_dir, exist_ok=True)
+        saved_file_path = os.path.join(temp_dir, filename)
+
+        # Write the uploaded file
+        with open(saved_file_path, 'wb') as f:
+            for chunk in uploaded_file:  # Use uploaded_file.stream if necessary
+                f.write(chunk)
+
+        print(f"File saved at: {saved_file_path}")
+
+        # Process the file
+        result = request_handler.process_file(saved_file_path)
+        print(f"Processing result: {result}")
+        return jsonify({"statusCode": result['statusCode'], "message" : result['message']}), result['statusCode']  
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return jsonify({"statusCode": 500, "message": "An unexpected error occurred. Please try again."}), 500
+      
+
+def handle_chubu_probe1():
+    """
+    Handle file uploads, saving them temporarily in `/tmp`, and processing CSV or ZIP files.
+    """
+    try:
+        # Retrieve the uploaded file
+        uploaded_file = request.files.get('file')
+        if not uploaded_file or not uploaded_file.filename:
+            return {"statusCode": 404, "message": "No file selected. Please upload a valid ZIP or CSV file."}
+
         # Secure the filename
         filename = secure_filename(uploaded_file.filename)
 

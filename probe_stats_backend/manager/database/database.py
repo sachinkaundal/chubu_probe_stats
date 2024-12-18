@@ -285,14 +285,14 @@ class Database:
             else:
                 return {
                     "statusCode": 404,
-                    "message": "No records found in the table. It may be empty or no updates have been recorded yet."
+                    "message": "No records found for last CSV update."
                     }
         
         except Exception as e:
             # Handle any exceptions that occur during the query execution
             return {
                 "statusCode": 500,
-                "message": "An error occurred while fetching the last update time. Please try again later."
+                "message": f"An error occurred while fetching the last update time. Error: {str(e)}"
             }
 
     def delete_target_road(self, mesh_code, inflow_node, outflow_node):

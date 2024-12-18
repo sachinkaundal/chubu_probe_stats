@@ -276,7 +276,7 @@ class Utils:
         
     
     def get_current_date_time():
-        current_datetime = datetime.datetime.now()
+        current_datetime = datetime.datetime.now(datetime.timezone.utc)
         formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         return formatted_datetime
 

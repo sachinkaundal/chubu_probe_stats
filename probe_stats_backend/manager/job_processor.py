@@ -6,7 +6,7 @@ from utils.utils import Utils           # Import Utils from utils.py
 from utils.loggings import Logger       # Import Logger from loggings.py
 from database.database import Database      # Import Database from database.py
 from job_manager.file_processor import FileProcessor
-
+from datetime import datetime, timezone 
 class JobProcessor:
 
     def __init__(self):
@@ -19,6 +19,24 @@ class JobProcessor:
         self.db = Database()
         self.logger = Logger().get_logger()
         self.processing_threshold, self.scan_interval =  Utils.loadConfiguration()
+
+    def fetch_directory_meta_info(self, job_folder):
+        """
+        Fetches meta information of the given job folder.
+        """
+        try:
+            folder_info = {
+                "name": job_folder.name,
+                "path": str(job_folder),
+                "created_time": time.ctime(job_folder.stat().st_ctime),  # Creation time
+                "modified_time": time.ctime(job_folder.stat().st_mtime),  # Last modified time
+                "size": sum(f.stat().st_size for f in job_folder.glob('*') if f.is_file()),  # Size of files in bytes
+                "file_count": len(list(job_folder.glob('*')))  # Total file count
+            }
+            return folder_info
+        except Exception as e:
+            self.logger.error(f"Error fetching meta information for {job_folder.name}: {e}")
+            return None
 
     def detect_jobs(self):
         """Detect unprocessed jobs and return a list of job folders sorted by timestamp."""
@@ -34,7 +52,24 @@ class JobProcessor:
 
                 if job_folder.is_dir():
                     # Handle `.processing` folders
+                    meta_info = self.fetch_directory_meta_info(job_folder)
+                if meta_info:
+                    print(f"Meta information for {meta_info['name']}:")
+                    print(f"  Modified Time: {meta_info['modified_time']}")
+                    print(f"  Size: {meta_info['size']} bytes")
+                    print(f"  File Count: {meta_info['file_count']}")
                     parts = job_folder.name.split("_")
+                    # epoch_time = int(meta_info['modified_time'].timestamp())
+                    meta_info = meta_info['modified_time']
+                    current_time = datetime.now()
+                    print(meta_info, current_time)
+                    time_format = "%a %b %d %H:%M:%S %Y"
+                    meta_info_dt = datetime.strptime(meta_info, time_format)
+                    
+                        # Parse the second timestamp (current_time_str)
+                    current_time_dt = datetime.fromisoformat(str(current_time))
+                    modified_diff = abs((current_time_dt - meta_info_dt).total_seconds())
+                    # current_time_dt = datetime.fromisoformat(current_time)
                     if job_folder.suffix == ".processing":
                         # Check if the processing time exceeds processing_threshold seconds.
                         if (current_epoch - int(parts[1])) > self.processing_threshold:  # More than 20 seconds since job was created
@@ -46,8 +81,9 @@ class JobProcessor:
                     
                     # Detect normal job folders
                     if not job_folder.name.endswith(".processing"):
-                        if len(parts) >= 2 and parts[0] == "job":
-                            job_folders.append(job_folder)  # Add job folder to the list
+                        if modified_diff > 10:
+                            if len(parts) >= 2 and parts[0] == "job":
+                                job_folders.append(job_folder)  # Add job folder to the list
 
             except Exception as e:
                 self.logger.error(f"Error processing folder {job_folder.name}: {str(e)}")  # Log the error
