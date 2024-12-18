@@ -20,7 +20,7 @@ CURRENT_DIR=`pwd`
 cd $MYSQL_DIR
 # Deploy mysql container using Scorer API
 sh setup_pre_req
-python3 db_mgr.py --db-name $MYSQL_DATABASE_NAME --hostname localhost --stack-name $MYSQL_INSTANCE_NAME
+python3 db_mgr.py --db-name $MYSQL_DATABASE_NAME --hostname localhost --stack-name $MYSQL_INSTANCE_NAME --nw-type allow_inside_device
 echo "MySQL container deployment initiated."
 
 # fetch mysql database connection container name
