@@ -215,13 +215,13 @@ const CreateMemo = () => {
         memo: createMemoData.memo.trim(),
       };
       await addMemoRecord(trimmedData);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       setCreateMemoData({
         mesh_code: '',
         inflow_node: '',
         outflow_node: '',
         memo: '',
       });
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       sendNotification({
         type: 'success',
         message: 'Target road record has been created successfully.',
@@ -275,6 +275,7 @@ const CreateMemo = () => {
                 required={true}
                 placeholder={t('Enter valid code')}
                 maxLength={6}
+                disabled={loading}
                 value={createMemoData.mesh_code}
                 onChange={handleFormDataInputChange}
               />
@@ -288,6 +289,7 @@ const CreateMemo = () => {
                 id="inflow_node"
                 placeholder={t('Enter valid node')}
                 maxLength={6}
+                disabled={loading}
                 required
                 value={createMemoData.inflow_node}
                 onChange={handleFormDataInputChange}
@@ -303,6 +305,7 @@ const CreateMemo = () => {
                 placeholder={t('Enter valid node')}
                 maxLength={6}
                 required={true}
+                disabled={loading}
                 value={createMemoData.outflow_node}
                 onChange={handleFormDataInputChange}
               />
@@ -312,6 +315,7 @@ const CreateMemo = () => {
               <DisplayInput
                 name="memo"
                 id="memo"
+                disabled={loading}
                 placeholder={t('Enter memo name')}
                 maxLength={30}
                 value={createMemoData.memo}

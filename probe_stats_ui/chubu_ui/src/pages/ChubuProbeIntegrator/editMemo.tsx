@@ -133,6 +133,7 @@ const SaveChangesButton = styled(ButtonWithLoading)<{ loading?: boolean }>`
     padding: ${({ loading }) => (loading ? '0 8px' : '0px')};
   }
 `;
+
 const EditMemo = () => {
   const { t } = useTranslation(['CommonDict']);
   const [loading, setLoading] = useState(false);
@@ -272,6 +273,7 @@ const EditMemo = () => {
                 placeholder={t('Enter memo name')}
                 maxLength={30}
                 value={createMemoData.memo}
+                disabled={loading}
                 onChange={handleFormDataInputChange}
               />
             </Field>

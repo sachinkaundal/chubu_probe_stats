@@ -99,11 +99,21 @@ const SettingHeaderData: FC<SettingHeaderDataProps> = ({
 }) => {
   const { t } = useTranslation(['CommonDict']);
   const { sendNotification } = useNotification();
-  const [lastUpdated, setLastUpdated] = useState<string>('');
+  const lastTime = localStorage.getItem('chubuLastUpdateTime') || '';
+  const [lastUpdated, setLastUpdated] = useState<string>(lastTime);
+  const formatEpochToDateTime = (epochTime: number) => {
+    const date = new Date(Number(epochTime) * 1000);
+    const formattedDate = date.toLocaleDateString('en-CA').replace(/-/g, '/');
+    const formattedTime = date.toTimeString().slice(0, 8);
+    return `${formattedDate} - ${formattedTime}`;
+  };
+
   const updateDate = useCallback(async () => {
     try {
       const date = await fetchCsvUpdateTime();
-      setLastUpdated(date);
+      const formatDate = formatEpochToDateTime(date);
+      setLastUpdated(formatDate);
+      localStorage.setItem('chubuLastUpdateTime', formatDate);
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
@@ -111,7 +121,13 @@ const SettingHeaderData: FC<SettingHeaderDataProps> = ({
         'Internal server error.';
       sendNotification({ type: 'error', message: errorMessage });
     }
-  }, [fetchCsvUpdateTime, lastUpdated, sendNotification, setLastUpdated]);
+  }, [
+    fetchCsvUpdateTime,
+    lastUpdated,
+    sendNotification,
+    setLastUpdated,
+    lastUpdateChanged,
+  ]);
 
   useEffect(() => {
     updateDate();

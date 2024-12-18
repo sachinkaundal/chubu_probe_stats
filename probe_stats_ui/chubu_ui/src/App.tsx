@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import logoMarkSvg from './svg/logo-mark.svg';
 import menu from './pages/menu.json';
-import chubuProbeIntegrator from './pages/ChubuProbeIntegrator/index';
+import ChubuProbeIntegrator from './pages/ChubuProbeIntegrator/index';
 import EditMemo from './pages/ChubuProbeIntegrator/editMemo';
 import CreateMemo from './pages/ChubuProbeIntegrator/createMemo';
 import i18n from './i18n';
@@ -23,6 +23,7 @@ const App: any = () => {
     i18n.changeLanguage(language);
     localStorage.setItem('language', language);
   }, []);
+  localStorage.setItem('chubuLastUpdateTime', '');
   document.body.className = 'light-theme';
   return (
     <>
@@ -49,7 +50,7 @@ const App: any = () => {
           <Route
             path="/settings/chubu-probe-integrator"
             exact
-            component={chubuProbeIntegrator}
+            component={ChubuProbeIntegrator}
           />
           <Route
             path="/settings/chubu-probe-integrator/edit-memo/:mesh_code/:inflow_node/:outflow_node/:memo?"

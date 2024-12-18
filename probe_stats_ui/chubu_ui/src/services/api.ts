@@ -3,7 +3,8 @@ const PROTOCOL = process.env.REACT_APP_PROTOCOL;
 // const BASE_URL = `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_PORT}`;
 // self url in place of backend
 const BACKEND_HOST = window.location.hostname;
-const BACKEND_PORT = process.env.REACT_APP_PORT; // Assuming you already have this set
+const BACKEND_PORT = process.env.REACT_APP_PORT;
+// const BASE_URL = '192.168.0.118:5000';
 const BASE_URL = `${BACKEND_HOST}:${BACKEND_PORT}`;
 
 const authorizationToken: string =
@@ -424,22 +425,23 @@ export const uploadHolidayFile = async (file: File): Promise<string> => {
   }
 };
 
-export const fetchCsvUpdateTime = async (): Promise<string> => {
+export const fetchCsvUpdateTime = async (): Promise<number> => {
   try {
     const response = await axios.get<{
       lastUpdate: string;
       statusCode: number;
       message: string;
+      epochTime: number;
     }>(`${PROTOCOL}://${BASE_URL}/api/last-csv-update`, {
       headers: {
         'x-access-token': authorizationToken,
       },
     });
 
-    const { statusCode, lastUpdate, message } = response.data;
+    const { statusCode, epochTime, message } = response.data;
 
     if (response.status === 200 && statusCode === 200) {
-      return lastUpdate;
+      return epochTime;
     } else {
       throw new Error(
         message || 'Unknown error occurred while fetching CSV update time.'
