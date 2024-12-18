@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "icon": "ViewSettings",
+      "title": "Settings",
+      "href": "/settings",
+      "submenu": [
+        {
+          "title": "Chubu Probe Integrator",
+          "href": "/settings/chubu-probe-integrator"
+        }
+      ]
+    }
+
+  ]
+}

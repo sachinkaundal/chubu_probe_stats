@@ -1,0 +1,62 @@
+version: '3.8'
+
+networks:
+  REPLACE_NETWORK_NAME:
+    external:
+      name: REPLACE_NETWORK_NAME
+  sdk_bridge_network:
+    external:
+      name: sdk_bridge_network
+    driver: bridge
+  # local_network:
+  #   driver: bridge
+
+
+#use data.vol
+volumes:
+  data.vol:
+    external: true
+
+# Define common configurations for MySQL and Redis using YAML anchors
+x-common: &common-env
+  MYSQL_HOST: REPLACE_MYSQL_CONTAINER_HOST
+  MYSQL_PORT: REPLACE_MYSQL_PORT
+  MYSQL_PASSWORD: REPLACE_MYSQL_PASSWORD
+  MYSQL_USER: REPLACE_MYSQL_USER
+  MYSQL_DATABASE_NAME: REPLACE_MYSQL_DATABASE_NAME
+  CHUBU_MANAGER_DIR: REPLACE_CHUBU_MANAGER_DIR
+  LOG_LEVEL: INFO
+  INTERNAL_FTP_DIR: REPLACE_INTERNAL_FTP_DIR
+  JOBS_DIR: REPLACE_JOBS_DIR
+  HOLIDAYS_DIR: REPLACE_HOLIDAYS_DIR
+  PROCESSED_DIR: REPLACE_PROCESSED_DIR
+  BAD_DIR: REPLACE_BAD_DIR
+  LOGS_DIR: REPLACE_LOGS_DIR
+  LOG_FILE: REPLACE_LOG_FILE
+
+
+services:
+  probe_stats_manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.probe_stats_manager
+    container_name: chubu_probe_stats_manager
+    expose:
+      - 5000
+    networks:
+      - REPLACE_NETWORK_NAME
+      - sdk_bridge_network
+      # - local_network
+    ports:
+      - "5000:5000" 
+    logging:
+      driver: journald
+      options:
+       tag: scorer-probe_stats_manager
+    command: bash /opt/manager/entrypoint.sh
+    volumes:
+      - data.vol:REPLACE_JOBS_DIR #attach where processed file placed 
+      - REPLACE_FTP_DIR:REPLACE_INTERNAL_FTP_DIR #attach where file come from ftp
+    environment:
+      <<: *common-env
+    restart: always

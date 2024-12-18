@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  REPLACE_NETWORK_NAME:
+    external:
+      name: REPLACE_NETWORK_NAME
+    driver: bridge
+
+# Define common configurations for MySQL and Redis using YAML anchors
+x-common: &common-env
+  CHUBU_UI_DIR: REPLACE_CHUBU_UI_DIR
+  NETWORK_NAME: REPLACE_NETWORK_NAME
+  LOG_LEVEL: INFO
+
+services:
+  probe_stats_ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.probe_stats_ui
+    container_name: probe_stats_ui
+    expose:
+      - 3000
+    networks:
+      - REPLACE_NETWORK_NAME
+    ports:
+      - "3000:3000" 
+    logging:
+      driver: journald
+      options:
+       tag: scorer-probe_stats_ui
+    command: bash /opt/manager/entrypoint.sh
+    environment:
+      <<: *common-env
+    restart: always

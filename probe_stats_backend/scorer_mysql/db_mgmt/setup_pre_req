@@ -1,0 +1,54 @@
+#!/bin/bash
+
+STEP=1
+if tty -s; then
+    COLOR_CLEAR="\033[0m"
+    COLOR_RED="\033[31m"
+    COLOR_GREEN="\033[32m"
+    APT_QUIET=
+    PIP_QUIET=
+else
+    COLOR_CLEAR=
+    COLOR_RED=
+    COLOR_GREEN=
+    APT_QUIET=-q
+    PIP_QUIET=-q
+fi
+
+run()
+{
+    echo ""
+    echo "#${SEC}-${STEP} | ${*}"
+    echo "----------------------------------------"
+
+    set +e
+    eval "${@}"
+    RETVAL=$?
+    set -e
+
+    echo "----------------------------------------"
+    if [ $RETVAL -eq 0 ]; then
+        echo -e "[ ${COLOR_GREEN}OK${COLOR_CLEAR} ]"
+    else
+        echo -e "[ ${COLOR_RED}ERROR($RETVAL)${COLOR_CLEAR} ]"
+        exit $RETVAL
+    fi
+    STEP=$((STEP+1))
+}
+
+
+# Install mysql connector.
+run time pip install --no-color --quiet --upgrade --prefer-binary \
+    mysql-connector-python
+
+
+# Install pandas.
+run time pip install --no-color --quiet --upgrade --prefer-binary \
+    pandas
+
+# Install required packgaes
+run time apt-get install -y --no-install-recommends \
+    libatlas-base-dev \
+    libblas-dev
+
+# End.

@@ -1,0 +1,17 @@
+NETWORK_NAME=CHUBU-Network
+MYSQL_INSTANCE_NAME=CHUBU-PROB-STATS-mysql
+MYSQL_DATABASE_NAME=chubu_prob_stats
+MYSQL_PORT=3306
+MYSQL_PASSWORD=chubu_prob_stats_mysqldb
+MYSQL_USER=root
+MYSQL_DIR=scorer_mysql/db_mgmt
+FTP_DIR=/opt/scorer/cache/ftp/chubu
+CHUBU_MANAGER_DIR=/opt/manager
+INTERNAL_FTP_DIR=/otp/ftp
+JOBS_DIR=/opt/requests/data/jobs
+HOLIDAYS_DIR=/opt/requests/data/chubu_probe_stats/
+PROCESSED_DIR=/processed/
+BAD_DIR=/bad/
+LOGS_DIR=/opt/scorer/log/chubu_probe_stats
+LOG_FILE=logs.log
+TMP_DIR=/opt/requests/data/jobs/tmp

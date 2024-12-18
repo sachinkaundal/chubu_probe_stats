@@ -1,0 +1,29 @@
+# Use the official Ubuntu image as the base image
+FROM ubuntu:22.04
+
+# Set the environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV BASE_DIR /opt
+ENV MANAGER_FOLDER manager
+ENV MANAGER_DIR manager
+
+# Install Python and other dependencies
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip cron vim netcat inotify-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory in the container
+WORKDIR ${BASE_DIR}/${MANAGER_FOLDER}
+
+# Copy the manager file into container
+COPY ${MANAGER_DIR}/ ${BASE_DIR}/${MANAGER_FOLDER}/
+
+# Install the Python dependencies
+RUN pip install -r ${BASE_DIR}/${MANAGER_FOLDER}/requirements/requirements.txt
+
+RUN chmod +x /opt/manager/*.sh
+
+RUN chmod +x /opt/manager/entrypoint.sh
+EXPOSE 5000
+ENTRYPOINT ["/opt/manager/entrypoint.sh"]
